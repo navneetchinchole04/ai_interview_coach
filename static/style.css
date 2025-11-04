@@ -1,36 +1,97 @@
+/* Global Styling */
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
-}
-
-h1 {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #e3f2fd, #f5f7fa);
   color: #333;
+  margin: 0;
+  padding: 0;
 }
 
+/* Centered Container */
+.container {
+  max-width: 800px;
+  margin: 50px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 40px;
+  text-align: center;
+}
+
+/* Headings */
+h1 {
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+h3 {
+  color: #444;
+  margin-bottom: 5px;
+}
+
+/* Text Areas */
 textarea {
   width: 100%;
-  height: 80px;
+  height: 90px;
   margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
 }
 
+textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Buttons */
 button {
-  margin: 5px 0;
-  padding: 8px 16px;
-  background-color: #4CAF50;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
   color: white;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-/* ✅ Thank You Box Styling */
-.thankyou-box {
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Question Blocks */
+.question-block {
+  background: #f9f9f9;
+  border-left: 5px solid #007bff;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+/* Feedback Box */
+.feedback-box {
+  background: #eef5ff;
+  border-left: 5px solid #007bff;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+/* Thank You Box */
+.thankyou-message {
   margin-top: 30px;
-  padding: 20px;
-  background-color: #e8f8e8;
+  padding: 25px;
+  background-color: #e8f5e9;
   border-radius: 10px;
   text-align: center;
-  color: #333;
+  color: #2e7d32;
   font-size: 18px;
-  border: 1px solid #b2d8b2;
+  border: 1px solid #a5d6a7;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
