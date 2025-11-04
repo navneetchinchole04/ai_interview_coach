@@ -15,15 +15,18 @@
 ## 🗂️ Project Structure
 ai_interview_coach/
 │
-├── app.py # Main Flask application
-├── resume_parser.py # Extracts skills from uploaded resumes
-├── question_gen.py # Generates interview questions using extracted skills
-├── feedback_engine.py # Provides AI-based feedback on answers
-├── requirements.txt # Dependencies
-├── static/ # CSS and static assets
-│ └── style.css
-└── templates/ # HTML templates
-└── index.html
+├── app.py                 # Main Flask application
+├── resume_parser.py       # Extracts skills from uploaded resumes
+├── question_gen.py        # Generates interview questions using extracted skills
+├── feedback_engine.py     # Provides AI-based feedback on answers
+├── requirements.txt       # Dependencies
+│
+├── static/                # CSS and static assets
+│   └── style.css
+│
+└── templates/             # HTML templates
+    ├── home.html          # Intro page with project info and "Next" button
+    └── upload.html        # Resume upload and interview interface
 
 ---
 
