@@ -57,13 +57,15 @@
                                 </div>`;
             }
 
-            // ✅ Final thank-you message
-            feedbackDiv.innerHTML = resultsHTML + `
-                <div class="thankyou-box">
-                    <h3>🎉 Thank you for completing the interview!</h3>
+            // ✅ Add thank-you message at the end
+            resultsHTML += `
+                <div class='thankyou-message'>
+                    <h2>🎉 Thank you for completing the interview!</h2>
                     <p>Our team will review your answers and reach out to you if you qualify.</p>
                 </div>
             `;
+
+            feedbackDiv.innerHTML = resultsHTML;
         });
     </script>
 </body>
