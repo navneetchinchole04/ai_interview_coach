@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html')  # new intro page
+    return render_template('home.html')  # intro page
 
 @app.route('/upload')
 def upload_page():
@@ -22,6 +22,14 @@ def upload_resume():
     questions = generate_questions(skills)
     return render_template('interview.html', skills=skills, questions=questions)
 
+# 🆕 Route for single "Submit All" feedback
+@app.route('/feedback_all', methods=['POST'])
+def feedback_all():
+    answers = [v for k, v in sorted(request.form.items())]
+    feedback_list = [get_feedback(a, f"Q{i+1}") for i, a in enumerate(answers)]
+    return jsonify({"feedback": feedback_list})
+
+# Old route (you can keep it for safety)
 @app.route('/feedback', methods=['POST'])
 def feedback():
     answer = request.json['answer']
