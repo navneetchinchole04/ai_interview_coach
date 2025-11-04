@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Interview Session</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>🧠 AI Interview Session</h2>
+    <h3>Skills Detected:</h3>
+    <p>{{ ', '.join(skills) }}</p>
+
+    <div id="questions">
+      {% for q in questions %}
+        <div class="question-block">
+          <p><strong>Q{{ loop.index }}:</strong> {{ q }}</p>
+          <textarea id="answer{{ loop.index }}" placeholder="Type your answer here..."></textarea>
+          <button onclick="getFeedback('{{ q }}', 'answer{{ loop.index }}')">Get Feedback</button>
+          <div id="feedback{{ loop.index }}" class="feedback"></div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <button onclick="window.location.href='/'">⬅️ Back to Home</button>
+  </div>
+
+  <script>
+    async function getFeedback(question, answerId) {
+      const answer = document.getElementById(answerId).value;
+      const res = await fetch("/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, answer })
+      });
+      const data = await res.json();
+      document.getElementById("feedback" + answerId.replace("answer", "")).innerText = "💬 " + data.feedback;
+    }
+  </script>
+</body>
+</html>
