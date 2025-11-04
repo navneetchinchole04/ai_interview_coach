@@ -20,7 +20,7 @@ def upload_resume():
         return jsonify({'error': 'No file uploaded'})
     skills = extract_skills(file)
     questions = generate_questions(skills)
-    return jsonify({'skills': skills, 'questions': questions})
+    return render_template('interview.html', skills=skills, questions=questions)
 
 @app.route('/feedback', methods=['POST'])
 def feedback():
