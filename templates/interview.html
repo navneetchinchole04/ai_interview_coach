@@ -1,97 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interview Practice</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      background: #fff;
-      padding: 30px;
-      max-width: 800px;
-      margin: 0 auto;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    .question {
-      margin-bottom: 25px;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      resize: vertical;
-    }
-    button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    .feedback {
-      background: #e9ffe9;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 10px;
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Session</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h2>🧠 Interview Practice</h2>
-    <form id="interviewForm" method="post" action="/feedback_all">
-      {% for q in questions %}
-        <div class="question">
-          <p><b>Q{{ loop.index }}:</b> {{ q }}</p>
-          <textarea name="answer{{ loop.index }}" placeholder="Type your answer here..."></textarea>
-        </div>
-      {% endfor %}
-      <button type="submit">Submit All Answers</button>
-    </form>
-    <div id="feedbackSection"></div>
-  </div>
+    <div class="container">
+        <h1>🧠 AI Interview Session</h1>
 
-  <script>
-    const form = document.getElementById('interviewForm');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
+        <h3>Skills Detected:</h3>
+        <p>{{ ', '.join(skills) }}</p>
 
-      const response = await fetch('/feedback_all', {
-        method: 'POST',
-        body: formData
-      });
+        <form id="interviewForm">
+            {% for q in questions %}
+            <div class="question-block">
+                <p><strong>Q{{ loop.index }}:</strong> {{ q }}</p>
+                <textarea name="answer{{ loop.index }}" placeholder="Type your answer here..." required></textarea>
+            </div>
+            {% endfor %}
+            <button type="button" id="submitAll">Submit All Answers</button>
+        </form>
 
-      const data = await response.json();
-      const feedbackDiv = document.getElementById('feedbackSection');
-      feedbackDiv.innerHTML = "<h3>🗣 Feedback</h3>";
-      data.feedback.forEach((f, i) => {
-        feedbackDiv.innerHTML += `<p><b>Q${i+1}:</b> ${f}</p>`;
-      });
-    });
-  </script>
+        <div id="feedbackSection"></div>
+
+        <button onclick="window.location.href='/'">⬅️ Back to Home</button>
+    </div>
+
+    <script>
+        document.getElementById("submitAll").addEventListener("click", async () => {
+            const form = document.getElementById("interviewForm");
+            const feedbackDiv = document.getElementById("feedbackSection");
+            feedbackDiv.innerHTML = "<p>Processing feedback...</p>";
+
+            const questions = {{ questions|tojson }};
+            const answers = Array.from(form.elements)
+                                 .filter(e => e.tagName === "TEXTAREA")
+                                 .map(e => e.value);
+
+            let resultsHTML = "";
+
+            for (let i = 0; i < questions.length; i++) {
+                const response = await fetch("/feedback", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        question: questions[i],
+                        answer: answers[i]
+                    })
+                });
+                const data = await response.json();
+                resultsHTML += `<div class='feedback-box'>
+                                    <p><strong>Q${i + 1}:</strong> ${questions[i]}</p>
+                                    <p><strong>Feedback:</strong> ${data.feedback}</p>
+                                </div>`;
+            }
+
+            feedbackDiv.innerHTML = resultsHTML;
+        });
+    </script>
 </body>
 </html>
