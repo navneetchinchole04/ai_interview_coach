@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from resume_parser import extract_skills
 from question_gen import generate_questions
 from feedback_engine import get_feedback
@@ -7,7 +7,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('home.html')  # new intro page
+
+@app.route('/upload')
+def upload_page():
+    return render_template('upload.html')  # upload resume page
 
 @app.route('/upload', methods=['POST'])
 def upload_resume():
