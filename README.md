@@ -51,7 +51,7 @@ ai_interview_coach/
 ├── interview.html # Interactive interview interface
 └── signup.html # Signup with validation
 
-
+```
 ---
 
 ## ⚙️ How to Run Locally
@@ -60,6 +60,7 @@ ai_interview_coach/
 ```bash
 git clone https://github.com/navneetchinchole04/ai_interview_coach.git
 cd ai_interview_coach
+```
 
 ### 2️⃣ Install dependencies
 pip install -r requirements.txt
