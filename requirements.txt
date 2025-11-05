@@ -1,4 +1,7 @@
-flask
-gunicorn
-PyMuPDF
-spacy
+Flask
+google-generativeai
+python-dotenv
+Werkzeug
+itsdangerous
+Jinja2
+click
