@@ -40,23 +40,22 @@
             <span class="difficulty-tag easy">🟢 EASY</span>
           {% endif %}
 
-         {% if question.type == 'MCQ' %}
-  {% set parts = question.text.split(' A) ') %}
-  {% set main_q = parts[0] %}
-  {% set rest = parts[1] if parts|length > 1 else '' %}
-  {% set options = rest.replace(' B)', '|B)').replace(' C)', '|C)').replace(' D)', '|D)').split('|') %}
-  
-  <p>{{ main_q }}</p>
-  <div class="mcq-options">
-    {% set qid = 'answer_' ~ loop.index0 %}
-    {% for opt in options %}
-      {% if opt.strip() %}
-        <label>
-          <input type="radio" name="{{ qid }}" value="{{ opt[0] }}" required> {{ opt }}
-        </label><br>
-      {% endif %}
-    {% endfor %}
-  </div>
+          {% if question.type == 'MCQ' %}
+            {% set parts = question.text.split(' A) ') %}
+            {% set main_q = parts[0] %}
+            {% set rest = parts[1] if parts|length > 1 else '' %}
+            {% set options = rest.replace(' B)', '|B)').replace(' C)', '|C)').replace(' D)', '|D)').split('|') %}
+            
+            <div class="mcq-options">
+              {% set qid = 'answer_' ~ loop.index0 %}
+              {% for opt in options %}
+                {% if opt.strip() %}
+                  <label>
+                    <input type="radio" name="{{ qid }}" value="{{ opt[0] }}" required> {{ opt }}
+                  </label><br>
+                {% endif %}
+              {% endfor %}
+            </div>
 
           {% elif question.type == 'Pseudocode' %}
             <textarea name="answer_{{ loop.index0 }}" rows="4" placeholder="Write pseudocode here..." required></textarea>
@@ -69,64 +68,74 @@
       {% endfor %}
       <button type="submit" class="btn-primary">✅ Submit All Answers</button>
     </form>
-<div id="thankyouBox" class="thankyou-message">
-  <h3>✅ Score Submitted Successfully!</h3>
-  <p>🎯 Great work! Your responses have been saved successfully. You may now return to the home page.</p>
-  <div style="display: flex; justify-content: center; margin-top: 20px;">
-     <a href="/" class="btn-primary" style="margin: 0; display: inline-block;">⬅ Back to Home</a>
-  </div>
-</div>
+
+    <div id="thankyouBox" class="thankyou-message">
+      <h3>✅ Score Submitted Successfully!</h3>
+      <p id="answerSummary"></p>
+      <p>🎯 Great work! Your responses have been saved successfully. You may now return to the home page.</p>
+      <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <a href="/" class="btn-primary" style="margin: 0; display: inline-block;">⬅ Back to Home</a>
+      </div>
+    </div>
 
   </div>
 
- <script>
-  // Timer logic (50 minutes countdown)
-  let timeLeft = 50 * 60;
-  const timerDisplay = document.getElementById('timer');
-  let timerInterval = setInterval(updateTimer, 1000);
+  <script>
+    // Timer logic (50 minutes countdown)
+    let timeLeft = 50 * 60;
+    const timerDisplay = document.getElementById('timer');
+    let timerInterval = setInterval(updateTimer, 1000);
 
-  function updateTimer() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      alert("⏰ Time's up! Submitting your answers automatically...");
-      document.getElementById("feedbackForm").submit();
+    function updateTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert("⏰ Time's up! Submitting your answers automatically...");
+        document.getElementById("feedbackForm").submit();
+      }
+      timeLeft--;
     }
-    timeLeft--;
-  }
 
-  // Thank-you animation + stop timer
-  const form = document.getElementById('feedbackForm');
-  const thankyouBox = document.getElementById('thankyouBox');
+    // Thank-you animation + stop timer
+    const form = document.getElementById('feedbackForm');
+    const thankyouBox = document.getElementById('thankyouBox');
+    const answerSummary = document.getElementById('answerSummary');
 
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
 
-    // 🛑 Stop the timer when form is submitted
-    clearInterval(timerInterval);
-    timerDisplay.style.display = 'none'; // hide timer box
+      // Count answered questions
+      const totalQuestions = document.querySelectorAll('.question-block').length;
+      const filledAnswers = Array.from(form.elements).filter(el => 
+        (el.type === 'textarea' && el.value.trim() !== '') ||
+        (el.type === 'radio' && el.checked)
+      ).length;
 
-    // Smooth fade-out form
-    form.style.opacity = 0;
-    setTimeout(() => {
-      form.style.display = "none";
+      // Show answer summary
+      answerSummary.textContent = `📊 You answered ${filledAnswers} out of ${totalQuestions} questions.`;
 
-      // Show Thank You box with fade-in effect
-      thankyouBox.style.display = "block";
+      // Stop the timer
+      clearInterval(timerInterval);
+      timerDisplay.style.display = 'none';
+
+      // Smooth fade-out form
+      form.style.opacity = 0;
       setTimeout(() => {
-        thankyouBox.style.opacity = 1;
-        thankyouBox.style.transition = "opacity 1.5s ease-in-out";
-      }, 200);
+        form.style.display = "none";
 
-      thankyouBox.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 900);
-  });
-</script>
+        // Show Thank You box with fade-in effect
+        thankyouBox.style.display = "block";
+        setTimeout(() => {
+          thankyouBox.style.opacity = 1;
+          thankyouBox.style.transition = "opacity 1.5s ease-in-out";
+        }, 200);
 
-
+        thankyouBox.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 900);
+    });
+  </script>
 
 </body>
 </html>
-

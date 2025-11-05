@@ -3,6 +3,14 @@ from resume_parser import extract_skills
 from question_gen import generate_questions
 from feedback_engine import get_feedback
 
+# 🧠 Load environment variables and configure Gemini AI
+from dotenv import load_dotenv
+import os
+import google.generativeai as genai
+
+load_dotenv()  # Load .env file (contains your GEMINI_API_KEY)
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 
