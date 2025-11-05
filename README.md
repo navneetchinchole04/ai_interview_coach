@@ -5,38 +5,33 @@ It analyzes resumes, generates relevant questions, and provides instant feedback
 
 ---
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white">
-  <img src="https://img.shields.io/badge/Flask-Web%20Framework-black?logo=flask">
-  <img src="https://img.shields.io/badge/Status-Completed-success">
-  <img src="https://img.shields.io/badge/UI-Glassmorphism%20Design-00d4ff?logo=css3&logoColor=white">
-</p>
-
----
-
 ## 🚀 Features
-- 🧠 **AI-generated interview questions** based on your uploaded resume or chosen role  
-- 📄 **Resume parser** that extracts key skills and experience automatically  
-- 💬 **Smart feedback engine** to evaluate and improve your responses  
-- ⏱️ **50-minute timer** to simulate a real interview session  
-- 🔐 **Secure login/signup** with strong password validation  
-- 🎨 **Glassmorphism UI** with glowing buttons and smooth animations  
+
+- 🧠 AI-generated interview questions based on your uploaded resume or chosen role  
+- 📄 Resume parser that extracts key skills and experience automatically  
+- 💬 Smart feedback engine to evaluate and improve your responses  
+- ⏱️ 50-minute timer to simulate a real interview session  
+- 🔐 Secure login/signup with strong password validation  
+- 🎨 Glassmorphism UI with glowing buttons and smooth animations  
+- 🤖 Integrated with **Google Gemini 2.5 Flash API** to generate dynamic, AI-powered interview questions securely using `.env` for key management  
 
 ---
 
-🤖 Integrated with **Google Gemini 2.5 Flash API** to generate dynamic, AI-powered interview questions securely using `.env` for key management.
-
-🔑 Gemini API Setup
+## 🔑 Gemini API Setup
 
 To enable AI-generated questions, this project integrates **Google Gemini 2.5 Flash API**.
 
-1. Go to [Google AI Studio](https://aistudio.google.com/).
-2. Create a new API key under your Google Cloud project.
+1. Go to [Google AI Studio](https://aistudio.google.com/).  
+2. Create a new API key under your Google Cloud project.  
 3. Create a `.env` file in your main folder and add:
-4. The key is securely loaded using `python-dotenv` in the app.
+4. The key is securely loaded using python-dotenv in the app.
 
-> ⚠️ Note: The `.env` file is ignored via `.gitignore` and **never pushed to GitHub**, ensuring API key security.
+⚠️ Note: The .env file is ignored via .gitignore and never pushed to GitHub, ensuring API key security.
 
+---
+
+   ```bash
+   GEMINI_API_KEY=your_api_key_here
 
 ## 🗂️ Project Structure
 ai_interview_coach/
