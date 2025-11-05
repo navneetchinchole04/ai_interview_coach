@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 import google.generativeai as genai
 
-load_dotenv()  # Load .env file (contains your GEMINI_API_KEY)
+#load_dotenv()  # Load .env file (contains your GEMINI_API_KEY)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
