@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Interview Coach</title>
+    <title>Upload Resume | AI Interview Coach</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>🤖 Welcome to AI Interview Coach</h1>
-        <p>Prepare for your interviews smarter! Our AI coach analyzes your resume, generates personalized questions, and provides instant feedback — just like a real interviewer.</p>
-        <button onclick="window.location.href='/upload'">Next ➡️</button>
+        <h1>📄 Upload Your Resume</h1>
+        <p class="subtitle">Let our AI analyze your skills and generate personalized interview questions for you.</p>
+
+        <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+            <div class="upload-box">
+                <label for="resume">Choose your resume file (PDF or DOCX):</label><br>
+                <input type="file" name="resume" id="resume" accept=".pdf,.docx" required>
+            </div>
+
+            <button type="submit" class="btn-primary">🚀 Generate Questions</button>
+        </form>
+
+        <button onclick="window.location.href='/'" class="btn-secondary">⬅️ Back to Home</button>
     </div>
 </body>
 </html>

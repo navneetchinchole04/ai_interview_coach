@@ -95,3 +95,106 @@ button:hover {
   border: 1px solid #a5d6a7;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
+
+/* ✨ Features Section (for home.html) */
+.features {
+  margin-top: 40px;
+}
+
+.features h2 {
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.feature-card h3 {
+  color: #007bff;
+  margin-bottom: 8px;
+}
+
+/* Primary Button (for Start Interview) */
+.btn-primary {
+  margin-top: 30px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* ========================= */
+/* Upload Page Enhancements  */
+/* ========================= */
+.upload-form {
+  margin-top: 30px;
+}
+
+.upload-box {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.upload-box label {
+  font-weight: 500;
+  color: #333;
+}
+
+input[type="file"] {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  background-color: #fff;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+input[type="file"]:hover {
+  border-color: #007bff;
+}
+
+.btn-secondary {
+  background-color: #f3f3f3;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 8px 20px;
+  border-radius: 6px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+}
