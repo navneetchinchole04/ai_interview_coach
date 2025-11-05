@@ -24,6 +24,20 @@ It analyzes resumes, generates relevant questions, and provides instant feedback
 
 ---
 
+🤖 Integrated with **Google Gemini 2.5 Flash API** to generate dynamic, AI-powered interview questions securely using `.env` for key management.
+
+🔑 Gemini API Setup
+
+To enable AI-generated questions, this project integrates **Google Gemini 2.5 Flash API**.
+
+1. Go to [Google AI Studio](https://aistudio.google.com/).
+2. Create a new API key under your Google Cloud project.
+3. Create a `.env` file in your main folder and add:
+4. The key is securely loaded using `python-dotenv` in the app.
+
+> ⚠️ Note: The `.env` file is ignored via `.gitignore` and **never pushed to GitHub**, ensuring API key security.
+
+
 ## 🗂️ Project Structure
 ai_interview_coach/
 │
