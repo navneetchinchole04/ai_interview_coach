@@ -18,26 +18,45 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        # ✅ Validate login
         if username in users and users[username] == password:
             session['user'] = username
-            flash('Login successful!', 'success')
+            flash('✅ Login successful!', 'success')
             return redirect(url_for('upload_page'))
         else:
-            flash('Invalid username or password', 'danger')
+            flash('⚠️ Invalid username or password. Try again.', 'danger')
             return render_template('login.html')
+    
     return render_template('login.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        confirm_password = request.form.get('confirm_password')
+
+        # ✅ Check if passwords match
+        if password != confirm_password:
+            flash('⚠️ Passwords do not match. Please try again.', 'danger')
+            return render_template('signup.html')
+
+        # ✅ Optional backend-level password strength validation
+        import re
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{7,}$', password):
+            flash('⚠️ Password must be at least 7 characters long, with one uppercase, one lowercase, and one digit.', 'warning')
+            return render_template('signup.html')
+
+        # ✅ Check if username already exists
         if username in users:
-            flash('Username already exists. Try another one.', 'warning')
+            flash('⚠️ Username already exists. Try another one.', 'warning')
         else:
             users[username] = password
-            flash('Signup successful! You can now log in.', 'success')
+            flash('✅ Signup successful! You can now log in.', 'success')
             return redirect(url_for('login'))
+
     return render_template('signup.html')
 
 @app.route('/logout')

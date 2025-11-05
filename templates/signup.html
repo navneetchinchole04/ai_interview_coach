@@ -27,15 +27,52 @@
     <h1 class="glow">📝 Create an Account</h1>
     <p>Join AI Interview Coach today and start preparing for success!</p>
 
-   <form method="POST" action="/signup" class="auth-form">
+<form method="POST" class="auth-form" onsubmit="return validatePassword()">
   <label for="username">Username:</label>
-  <input type="text" id="username" name="username" required>
+  <input type="text" name="username" placeholder="Enter username" required>
 
   <label for="password">Password:</label>
-  <input type="password" id="password" name="password" required>
+  <input type="password" id="password" name="password" placeholder="Enter password" required>
 
-  <button type="submit" class="btn-primary glow">✨ Sign Up</button>
+  <label for="confirm_password">Confirm Password:</label>
+  <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
+  
+  <div id="passwordError" style="color:#ff7777; font-size:14px; margin-top:8px; text-align:center;"></div>
+
+  <button type="submit" class="btn-primary">Sign Up</button>
 </form>
+
+<script>
+  function validatePassword() {
+    const password = document.getElementById("password");
+    const confirm = document.getElementById("confirm_password");
+    const errorBox = document.getElementById("passwordError");
+
+    // Clear previous errors
+    errorBox.textContent = "";
+    password.style.boxShadow = confirm.style.boxShadow = "";
+
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{7,}$/;
+
+    // Validate pattern
+    if (!regex.test(password.value)) {
+      errorBox.textContent = "⚠️ Password must be at least 7 characters long, with one uppercase, one lowercase, and one digit.";
+      password.style.boxShadow = "0 0 15px rgba(255, 100, 100, 0.6)";
+      return false;
+    }
+
+    // Validate match
+    if (password.value !== confirm.value) {
+      errorBox.textContent = "⚠️ Passwords do not match. Please recheck.";
+      confirm.style.boxShadow = "0 0 15px rgba(255, 100, 100, 0.6)";
+      return false;
+    }
+
+    // Success glow
+    password.style.boxShadow = confirm.style.boxShadow = "0 0 15px rgba(0, 255, 150, 0.5)";
+    return true;
+  }
+</script>
 
     <p style="margin-top: 20px; color: #aaa; text-align: center;">
       Already have an account? 

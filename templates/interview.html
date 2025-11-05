@@ -1,72 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Interview Session</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Interview Session</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .timer {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      font-size: 20px;
+      background-color: #111;
+      color: #00ff88;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-family: monospace;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🧠 AI Interview Session</h1>
 
-        <h3>Skills Detected:</h3>
-        <p>{{ ', '.join(skills) }}</p>
+  <div class="container">
+    <div class="timer" id="timer">50:00</div>
+    <h1 class="glow">💬 AI Interview Session</h1>
 
-        <form id="interviewForm">
-            {% for q in questions %}
-            <div class="question-block">
-                <p><strong>Q{{ loop.index }}:</strong> {{ q }}</p>
-                <textarea name="answer{{ loop.index }}" placeholder="Type your answer here..." required></textarea>
-            </div>
-            {% endfor %}
-            <button type="button" id="submitAll">Submit All Answers</button>
-        </form>
+    <p><strong>Skills Detected:</strong> {{ skills|join(', ') }}</p>
 
-        <div id="feedbackSection"></div>
+    <form id="feedbackForm" method="POST">
+      {% for question in questions %}
+        <div class="question-block">
+          <p><strong>Q{{ loop.index }}:</strong> {{ question.text }}</p>
 
-        <button onclick="window.location.href='/'">⬅️ Back to Home</button>
-    </div>
+          {% if question.difficulty == 'Difficult' %}
+            <span class="difficulty-tag difficult">🔴 DIFFICULT</span>
+          {% elif question.difficulty == 'Medium' %}
+            <span class="difficulty-tag medium">🟡 MEDIUM</span>
+          {% else %}
+            <span class="difficulty-tag easy">🟢 EASY</span>
+          {% endif %}
 
-    <script>
-        document.getElementById("submitAll").addEventListener("click", async () => {
-            const form = document.getElementById("interviewForm");
-            const feedbackDiv = document.getElementById("feedbackSection");
-            feedbackDiv.innerHTML = "<p>Processing feedback...</p>";
+         {% if question.type == 'MCQ' %}
+  {% set parts = question.text.split(' A) ') %}
+  {% set main_q = parts[0] %}
+  {% set rest = parts[1] if parts|length > 1 else '' %}
+  {% set options = rest.replace(' B)', '|B)').replace(' C)', '|C)').replace(' D)', '|D)').split('|') %}
+  
+  <p>{{ main_q }}</p>
+  <div class="mcq-options">
+    {% set qid = 'answer_' ~ loop.index0 %}
+    {% for opt in options %}
+      {% if opt.strip() %}
+        <label>
+          <input type="radio" name="{{ qid }}" value="{{ opt[0] }}" required> {{ opt }}
+        </label><br>
+      {% endif %}
+    {% endfor %}
+  </div>
 
-            const questions = {{ questions|tojson }};
-            const answers = Array.from(form.elements)
-                                 .filter(e => e.tagName === "TEXTAREA")
-                                 .map(e => e.value);
+          {% elif question.type == 'Pseudocode' %}
+            <textarea name="answer_{{ loop.index0 }}" rows="4" placeholder="Write pseudocode here..." required></textarea>
+          {% elif question.type == 'Coding' %}
+            <textarea name="answer_{{ loop.index0 }}" rows="6" placeholder="Write code or explain logic here..." required></textarea>
+          {% else %}
+            <textarea name="answer_{{ loop.index0 }}" rows="4" placeholder="Type your answer here..." required></textarea>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn-primary">✅ Submit All Answers</button>
+    </form>
+<div id="thankyouBox" class="thankyou-message">
+  <h3>✅ Score Submitted Successfully!</h3>
+  <p>🎯 Great work! Your responses have been saved successfully. You may now return to the home page.</p>
+  <div style="display: flex; justify-content: center; margin-top: 20px;">
+     <a href="/" class="btn-primary" style="margin: 0; display: inline-block;">⬅ Back to Home</a>
+  </div>
+</div>
 
-            let resultsHTML = "";
+  </div>
 
-            for (let i = 0; i < questions.length; i++) {
-                const response = await fetch("/feedback", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        question: questions[i],
-                        answer: answers[i]
-                    })
-                });
-                const data = await response.json();
-                resultsHTML += `<div class='feedback-box'>
-                                    <p><strong>Q${i + 1}:</strong> ${questions[i]}</p>
-                                    <p><strong>Feedback:</strong> ${data.feedback}</p>
-                                </div>`;
-            }
+ <script>
+  // Timer logic (50 minutes countdown)
+  let timeLeft = 50 * 60;
+  const timerDisplay = document.getElementById('timer');
+  let timerInterval = setInterval(updateTimer, 1000);
 
-            // ✅ Add thank-you message at the end
-            resultsHTML += `
-                <div class='thankyou-message'>
-                    <h2>🎉 Thank you for completing the interview!</h2>
-                    <p>Our team will review your answers and reach out to you if you qualify.</p>
-                </div>
-            `;
+  function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      alert("⏰ Time's up! Submitting your answers automatically...");
+      document.getElementById("feedbackForm").submit();
+    }
+    timeLeft--;
+  }
 
-            feedbackDiv.innerHTML = resultsHTML;
-        });
-    </script>
+  // Thank-you animation + stop timer
+  const form = document.getElementById('feedbackForm');
+  const thankyouBox = document.getElementById('thankyouBox');
+
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // 🛑 Stop the timer when form is submitted
+    clearInterval(timerInterval);
+    timerDisplay.style.display = 'none'; // hide timer box
+
+    // Smooth fade-out form
+    form.style.opacity = 0;
+    setTimeout(() => {
+      form.style.display = "none";
+
+      // Show Thank You box with fade-in effect
+      thankyouBox.style.display = "block";
+      setTimeout(() => {
+        thankyouBox.style.opacity = 1;
+        thankyouBox.style.transition = "opacity 1.5s ease-in-out";
+      }, 200);
+
+      thankyouBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 900);
+  });
+</script>
+
+
+
 </body>
 </html>
+

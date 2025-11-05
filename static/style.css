@@ -336,3 +336,222 @@ input[type="file"] {
   transform: translateY(-3px);
   box-shadow: 0 0 26px rgba(0, 212, 255, 0.6);
 }
+
+/* 🎯 Difficulty Badges */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.badge.medium {
+  background: rgba(0, 255, 0, 0.1);
+  color: #00ff9d;
+  border: 1px solid #00ff9d;
+}
+
+.badge.difficult {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4d4d;
+  border: 1px solid #ff4d4d;
+}
+
+/* Textarea styling */
+textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(108,99,255,0.3);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  padding: 10px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+textarea:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 10px rgba(0,212,255,0.3);
+}
+
+/* 🎯 Difficulty Badges with Glow Animation */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 8px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  animation: pulse 2s infinite alternate;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 🟢 Medium Badge */
+.badge.medium {
+  background: rgba(0, 255, 157, 0.08);
+  color: #00ff9d;
+  border: 1px solid rgba(0, 255, 157, 0.4);
+  box-shadow: 0 0 8px rgba(0, 255, 157, 0.3);
+}
+
+/* 🔴 Difficult Badge */
+.badge.difficult {
+  background: rgba(255, 0, 70, 0.08);
+  color: #ff4d4d;
+  border: 1px solid rgba(255, 77, 77, 0.4);
+  box-shadow: 0 0 8px rgba(255, 77, 77, 0.3);
+}
+
+/* Hover Effect */
+.badge:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 15px rgba(108, 99, 255, 0.5);
+}
+
+/* 🌟 Glow Pulse Animation */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 8px rgba(108, 99, 255, 0.3);
+    opacity: 0.8;
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(108, 99, 255, 0.6);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(108, 99, 255, 0.3);
+    opacity: 0.9;
+  }
+}
+
+/* ✅ Glowing Green Thank You Box */
+.thankyou-message {
+  margin-top: 40px;
+  padding: 30px;
+  background: rgba(0, 30, 20, 0.5);
+  border-radius: 16px;
+  text-align: center;
+  color: #d4ffe6;
+  font-size: 18px;
+  border: 1px solid rgba(0, 255, 120, 0.3);
+  box-shadow: 0 0 25px rgba(0, 255, 150, 0.35),
+              inset 0 0 20px rgba(0, 255, 120, 0.15);
+  animation: thankyouGlowGreen 3s infinite alternate ease-in-out;
+  backdrop-filter: blur(12px);
+}
+
+/* 🌟 Glow Animation for Green Thank You */
+@keyframes thankyouGlowGreen {
+  0% {
+    box-shadow: 0 0 10px rgba(0, 255, 120, 0.3);
+    background: rgba(0, 30, 20, 0.4);
+    color: #b3ffd1;
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 255, 150, 0.6);
+    background: rgba(0, 50, 30, 0.6);
+    color: #e8fff1;
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(0, 255, 120, 0.4);
+    background: rgba(0, 30, 20, 0.5);
+    color: #ccffe0;
+  }
+}
+
+/* ✅ Thank You Heading Style */
+.thankyou-message h3 {
+  background: linear-gradient(90deg, #00ffcc, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+/* 🌟 Glow Animation for Thank You */
+@keyframes thankyouGlow {
+  0% {
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    background: rgba(20, 40, 60, 0.5);
+    color: #b5e3ff;
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(108, 99, 255, 0.6);
+    background: rgba(30, 50, 80, 0.6);
+    color: #e0f7ff;
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    background: rgba(20, 40, 60, 0.5);
+    color: #b5e3ff;
+  }
+}
+
+/* ✅ Thank You Heading Style */
+.thankyou-message h3 {
+  background: linear-gradient(90deg, #6c63ff, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+/* Smooth fade for thank-you transition */
+#thankyouBox {
+  display: none;
+  opacity: 0;
+}
+
+#thankyouBox {
+  display: none;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.difficulty-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  margin-left: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.difficult {
+  background: #ff4444;
+  color: white;
+}
+
+.medium {
+  background: #ffaa00;
+  color: white;
+}
+
+.easy {
+  background: #44ff44;
+  color: black;
+}
+
+.timer {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: white;
+  padding: 12px 25px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  box-shadow: 0 0 10px #00c6ff;
+  z-index: 1000;
+  letter-spacing: 1px;
+}
