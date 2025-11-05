@@ -1,35 +1,72 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from resume_parser import extract_skills
 from question_gen import generate_questions
 from feedback_engine import get_feedback
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
+
+# Temporary in-memory database (use SQLite or Firebase later)
+users = {}
 
 @app.route('/')
 def home():
-    return render_template('home.html')  # intro page
+    return render_template('home.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users and users[username] == password:
+            session['user'] = username
+            flash('Login successful!', 'success')
+            return redirect(url_for('upload_page'))
+        else:
+            flash('Invalid username or password', 'danger')
+            return render_template('login.html')
+    return render_template('login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users:
+            flash('Username already exists. Try another one.', 'warning')
+        else:
+            users[username] = password
+            flash('Signup successful! You can now log in.', 'success')
+            return redirect(url_for('login'))
+    return render_template('signup.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('home'))
 
 @app.route('/upload')
 def upload_page():
-    return render_template('upload.html')  # upload resume page
+    if 'user' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+    return render_template('upload.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_resume():
+    if 'user' not in session:
+        flash('Please log in first!', 'warning')
+        return redirect(url_for('login'))
+
     file = request.files['resume']
     if not file:
         return jsonify({'error': 'No file uploaded'})
+
     skills = extract_skills(file)
     questions = generate_questions(skills)
     return render_template('interview.html', skills=skills, questions=questions)
 
-# 🆕 Route for single "Submit All" feedback
-@app.route('/feedback_all', methods=['POST'])
-def feedback_all():
-    answers = [v for k, v in sorted(request.form.items())]
-    feedback_list = [get_feedback(a, f"Q{i+1}") for i, a in enumerate(answers)]
-    return jsonify({"feedback": feedback_list})
-
-# Old route (you can keep it for safety)
 @app.route('/feedback', methods=['POST'])
 def feedback():
     answer = request.json['answer']

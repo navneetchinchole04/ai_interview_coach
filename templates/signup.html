@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup | AI Interview Coach</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- 🔹 Navbar -->
+ <header class="navbar">
+  <h2>🤖 AI Interview Coach</h2>
+<nav>
+  {% if 'user' in session %}
+    <a href="/logout">Logout</a>
+  {% else %}
+    <a href="/">Home</a>
+    <a href="/login">Login</a>
+    <a href="/signup">Signup</a>
+  {% endif %}
+</nav>
+</header>
+
+  <!-- 🔹 Signup Container -->
+  <div class="container">
+    <h1 class="glow">📝 Create an Account</h1>
+    <p>Join AI Interview Coach today and start preparing for success!</p>
+
+   <form method="POST" action="/signup" class="auth-form">
+  <label for="username">Username:</label>
+  <input type="text" id="username" name="username" required>
+
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" required>
+
+  <button type="submit" class="btn-primary glow">✨ Sign Up</button>
+</form>
+
+    <p style="margin-top: 20px; color: #aaa; text-align: center;">
+      Already have an account? 
+      <a href="/login" style="color:#6c63ff; text-decoration:none;">Login here</a>.
+    </p>
+  </div>
+
+</body>
+</html>

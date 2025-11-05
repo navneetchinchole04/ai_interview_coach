@@ -1,26 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Resume | AI Interview Coach</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Interview Coach</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>📄 Upload Your Resume</h1>
-        <p class="subtitle">Let our AI analyze your skills and generate personalized interview questions for you.</p>
 
-        <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form">
-            <div class="upload-box">
-                <label for="resume">Choose your resume file (PDF or DOCX):</label><br>
-                <input type="file" name="resume" id="resume" accept=".pdf,.docx" required>
-            </div>
+  <!-- 🔹 Navbar -->
+  <header class="navbar">
+  <h2>🤖 AI Interview Coach</h2>
+ <nav>
+  {% if 'user' in session %}
+    <a href="/logout">Logout</a>
+  {% else %}
+    <a href="/">Home</a>
+    <a href="/login">Login</a>
+    <a href="/signup">Signup</a>
+  {% endif %}
+</nav>
+</header>
 
-            <button type="submit" class="btn-primary">🚀 Generate Questions</button>
-        </form>
+  <!-- 🔹 Hero Section -->
+  <div class="container">
+    <h1 class="glow">WELCOME TO AI INTERVIEW COACH</h1>
+    <p>
+      Prepare for your interviews smarter! Let our AI generate personalized interview questions, 
+      evaluate your answers, and give you instant feedback — just like a real interviewer.
+    </p>
 
-        <button onclick="window.location.href='/'" class="btn-secondary">⬅️ Back to Home</button>
+    <!-- 🔹 Action Buttons (Login + Signup only) -->
+    <div style="margin-top:30px;">
+      <button onclick="window.location.href='/login'" class="btn-primary glow">🔐 Login</button>
+      <button onclick="window.location.href='/signup'" class="btn-primary glow">📝 Signup</button>
     </div>
+  </div>
+
+  <!-- 🔹 Features Section -->
+  <div class="features">
+    <h2>✨ Key Features</h2>
+    <div class="feature-list">
+      <div class="feature-card">
+        <h3>🧠 AI-Generated Questions</h3>
+        <p>Get personalized questions based on your resume and target role.</p>
+      </div>
+      <div class="feature-card">
+        <h3>💬 Instant Feedback</h3>
+        <p>Receive real-time feedback from the AI to refine your interview answers.</p>
+      </div>
+      <div class="feature-card">
+        <h3>📄 Resume Parsing</h3>
+        <p>Our system extracts your top skills automatically to tailor your experience.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🌙 Dark Modern Design</h3>
+        <p>Enjoy a sleek, futuristic interface designed for comfort and focus.</p>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

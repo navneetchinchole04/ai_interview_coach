@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | AI Interview Coach</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- 🔹 Navbar -->
+  <header class="navbar">
+  <h2>🤖 AI Interview Coach</h2>
+ <nav>
+  {% if 'user' in session %}
+    <a href="/logout">Logout</a>
+  {% else %}
+    <a href="/">Home</a>
+    <a href="/login">Login</a>
+    <a href="/signup">Signup</a>
+  {% endif %}
+</nav>
+</header>
+
+  <!-- 🔹 Login Container -->
+  <div class="container">
+    <h1 class="glow">🔐 Login to Continue</h1>
+    <p>Access your personalized AI interview experience by logging in.</p>
+
+    <!-- ✨ Auth Form (Glowing Inputs) -->
+    <form method="POST" action="/login" class="auth-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit" class="btn-primary glow">🚀 Login</button>
+    </form>
+
+    <p style="margin-top: 20px; color: #aaa; text-align: center;">
+      Don’t have an account? 
+      <a href="/signup" style="color:#6c63ff; text-decoration:none;">Sign up here.</a>
+    </p>
+  </div>
+
+</body>
+</html>
