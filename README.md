@@ -32,7 +32,7 @@ To enable AI-generated questions, this project integrates **Google Gemini 2.5 Fl
 
    ```bash
    GEMINI_API_KEY=your_api_key_here
-
+```
 ## 🗂️ Project Structure
 ai_interview_coach/
 │
@@ -53,7 +53,7 @@ ai_interview_coach/
 
 ```
 ---
-
+```
 ## ⚙️ How to Run Locally
 
 ### 1️⃣ Clone the repository
@@ -82,6 +82,23 @@ python app.py
 3. Start your AI interview — get questions (MCQs, pseudocode, coding).
 
 4. Submit answers and receive a thank-you screen with smooth transitions.
+
+---
+
+🖼️ Demo Screenshots
+✨ Overview
+<p align="center"> <img src="screenshots/home.png" width="45%" /> <img src="screenshots/login.png" width="45%" /> </p> <p align="center"> <img src="screenshots/signup.png" width="45%" /> <img src="screenshots/upload.png" width="45%" /> </p> <p align="center"> <img src="screenshots/interview.png" width="45%" /> <img src="screenshots/feedback.png" width="45%" /> </p>
+
+---
+
+🧠 Description of Each Page
+
+🏠 Home Page: Entry point with app overview and navigation buttons.
+🔑 Login Page: Secure login with validation for existing users.
+🆕 Signup Page: Create account with strong password validation (uppercase, lowercase, number).
+📄 Upload Page: Upload resume — system extracts key skills automatically.
+🤖 Interview Page: AI-powered Q&A session with real-time feedback.
+💬 Feedback Page: Displays smart AI feedback with improvement tips.
 
 ---
 
