@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✅ Thank You - AI Interview</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background: radial-gradient(circle at top, #0a0f0a, #020202);
+      color: #d4ffd4;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(0, 255, 136, 0.05);
+      border: 2px solid rgba(0, 255, 136, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+      padding: 50px;
+      width: 600px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #00ff88;
+      text-shadow: 0 0 15px #00ff88;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #cfffcc;
+      margin-top: 10px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #00ff88, #00ffaa);
+      box-shadow: 0 0 10px #00ffaa;
+      color: #001f0f;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00ffaa, #00ffcc);
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px #00ffaa;
+    }
+
+    .emoji {
+      font-size: 2rem;
+      animation: bounce 1.8s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="glow">💚 Thank You for Completing Your Interview!</h1>
+    <p>Great job, {{ session['user'] }}! <span class="emoji">🚀</span></p>
+    <p>Your answers and recordings have been securely saved.</p>
+    <a href="/" class="btn-primary">🏠 Go to Home</a>
+  </div>
+</body>
+</html>

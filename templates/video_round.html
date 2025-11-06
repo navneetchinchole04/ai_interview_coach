@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎥 AI Video Interview Round</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+  <style>
+    .question-box {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 25px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,255,136,0.3);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .question-box.active {
+      box-shadow: 0 0 25px rgba(0,255,255,0.6);
+      transform: scale(1.02);
+    }
+
+    video {
+      border: 2px solid #00ff88;
+      border-radius: 12px;
+      margin-top: 12px;
+    }
+
+    .record-controls button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #00d4ff, #6c63ff);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .record-controls button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .timer {
+      font-size: 18px;
+      color: #00ff88;
+      background-color: #111;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .status {
+      margin-top: 8px;
+      color: #9befff;
+      font-style: italic;
+    }
+
+    .playback {
+      margin-top: 15px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .playback.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 🌀 Upload Progress Bar */
+    .progress-bar-container {
+      width: 80%;
+      max-width: 320px;
+      margin: 10px auto;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      height: 10px;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 10px;
+      width: 0%;
+      background: linear-gradient(90deg, #00ffcc, #00aaff);
+      transition: width 0.3s ease;
+    }
+
+    .progress-percent {
+      color: #00eaff;
+      margin-top: 6px;
+      font-size: 13px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="glow">🎯 AI Video Interview Round</h1>
+    <div id="globalTimer" class="timer">--:--</div>
+
+    {% for question in questions %}
+    <div class="question-box" id="question{{ loop.index }}">
+      <h3>🎤 Question {{ loop.index }}:</h3>
+      <p>{{ question.question }}</p>
+      <p><strong>⏱ Time Limit:</strong> {{ question.time_limit }} seconds</p>
+
+      <div class="recording-box">
+        <video id="preview{{ loop.index }}" width="320" height="240" autoplay muted></video><br>
+        <div class="record-controls">
+          <button id="start{{ loop.index }}" onclick="startRecording({{ loop.index }}, {{ question.time_limit }})">🎬 Start Recording</button>
+          <button id="stop{{ loop.index }}" onclick="stopRecording({{ loop.index }})" disabled>⏹ Stop</button>
+          <button id="upload{{ loop.index }}" onclick="uploadRecording({{ loop.index }})" disabled>📤 Upload</button>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-bar-container" id="progressContainer{{ loop.index }}">
+          <div class="progress-bar" id="progressBar{{ loop.index }}"></div>
+        </div>
+        <div class="progress-percent" id="progressText{{ loop.index }}"></div>
+
+        <p id="status{{ loop.index }}" class="status"></p>
+        <div class="playback" id="playback{{ loop.index }}"></div>
+        <div class="feedback-box" id="feedbackBox{{ loop.index }}" style="display: none;">
+          <button class="btn-secondary" onclick="getFeedback({{ loop.index }})">🤖 Get AI Feedback</button>
+        <div id="feedbackText{{ loop.index }}" class="feedback-text"></div>
+</div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div style="margin-top: 35px;">
+      <a href="{{ url_for('thankyou') }}" class="btn-primary">✅ Finish Interview</a>
+    </div>
+  </div>
+
+  <!-- 🎥 JS -->
+<!-- 🎥 Recording + Upload + Feedback Logic -->
+<script>
+let recorders = {}; // Store MediaRecorders
+let videoChunks = {}; // Store recorded video data
+let streams = {}; // Store webcam streams
+
+function startRecording(qId, timeLimit) {
+  const videoEl = document.getElementById(`preview${qId}`);
+  const startBtn = document.getElementById(`start${qId}`);
+  const stopBtn = document.getElementById(`stop${qId}`);
+  const uploadBtn = document.getElementById(`upload${qId}`);
+  const statusEl = document.getElementById(`status${qId}`);
+
+  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then(stream => {
+      streams[qId] = stream;
+      videoEl.srcObject = stream;
+
+      const recorder = new MediaRecorder(stream);
+      recorders[qId] = recorder;
+      videoChunks[qId] = [];
+
+      recorder.ondataavailable = e => videoChunks[qId].push(e.data);
+      recorder.onstop = () => {
+        stream.getTracks().forEach(track => track.stop());
+        stopBtn.disabled = true;
+        uploadBtn.disabled = false;
+        statusEl.textContent = "✅ Recording stopped. Ready to upload.";
+      };
+
+      recorder.start();
+      statusEl.textContent = "🎙️ Recording started...";
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      // Auto-stop after the time limit
+      setTimeout(() => {
+        if (recorder.state === "recording") {
+          recorder.stop();
+          statusEl.textContent = "⏰ Time limit reached. Recording stopped automatically.";
+        }
+      }, timeLimit * 1000);
+    })
+    .catch(err => {
+      console.error("Camera access denied:", err);
+      statusEl.textContent = "❌ Camera or microphone not accessible!";
+    });
+}
+
+function stopRecording(qId) {
+  const recorder = recorders[qId];
+  if (recorder && recorder.state === "recording") {
+    recorder.stop();
+    document.getElementById(`status${qId}`).textContent = "🛑 Recording stopped.";
+  }
+}
+
+function uploadRecording(qId) {
+  const blob = new Blob(videoChunks[qId], { type: "video/webm" });
+  const formData = new FormData();
+  formData.append("video", blob, `question${qId}.webm`);
+  formData.append("question_id", qId);
+
+  const statusEl = document.getElementById(`status${qId}`);
+  statusEl.textContent = "📤 Uploading...";
+
+  fetch("/upload_video", { method: "POST", body: formData })
+    .then(res => res.json())
+    .then(data => {
+  if (data.status === "success") {
+    statusEl.textContent = "✅ Uploaded successfully! Getting feedback...";
+
+    // 🎞️ Create playback preview
+    const playbackDiv = document.getElementById(`playback${qId}`);
+    const videoURL = URL.createObjectURL(blob);
+    playbackDiv.innerHTML = `
+      <h4>🎬 Your Recorded Answer:</h4>
+      <video width="320" height="240" controls>
+        <source src="${videoURL}" type="video/webm">
+        Your browser does not support the video tag.
+      </video>
+    `;
+    playbackDiv.classList.add("visible");
+
+    // 🧠 Now get Gemini feedback
+    const questionText = document.querySelector(`#question${qId} p`).innerText;
+    const fakeTranscript = "This is a sample transcript of the candidate’s answer.";
+
+    fetch("/evaluate_response", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question: questionText,
+        transcript: fakeTranscript
+      })
+    })
+    .then(res => res.json())
+    .then(feedbackData => {
+      if (feedbackData.status === "success") {
+        const feedbackBox = document.createElement("div");
+        feedbackBox.classList.add("feedback-box");
+        feedbackBox.innerHTML = `
+          <h4>💬 Gemini Feedback</h4>
+          <p><strong>Clarity:</strong> ${feedbackData.feedback.scores.Clarity}/10</p>
+          <p><strong>Relevance:</strong> ${feedbackData.feedback.scores.Relevance}/10</p>
+          <p><strong>Confidence:</strong> ${feedbackData.feedback.scores.Confidence}/10</p>
+          <p><strong>Structure:</strong> ${feedbackData.feedback.scores.Structure}/10</p>
+          <p><strong>Overall:</strong> ${feedbackData.feedback.scores.Overall}/10</p>
+          <p class="feedback-text">${feedbackData.feedback.feedback}</p>
+        `;
+        document.querySelector(`.question-box:nth-of-type(${qId})`).appendChild(feedbackBox);
+      } else {
+        statusEl.textContent = "⚠️ Feedback generation failed.";
+      }
+    });
+  } else {
+    statusEl.textContent = "❌ Upload failed.";
+  }
+})
+
+    .catch(err => {
+      console.error(err);
+      statusEl.textContent = "⚠️ Error during upload.";
+    });
+}
+</script>
+
+</body>
+</html>
