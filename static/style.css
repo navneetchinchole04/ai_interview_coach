@@ -12,13 +12,14 @@ body {
 .container {
   max-width: 800px;
   margin: 60px auto;
-  background: rgba(20, 20, 40, 0.6);
+  background: rgba(20, 20, 40, 0.6); /* keep semi-transparent look */
   border-radius: 16px;
-  box-shadow: 0 0 25px rgba(108, 99, 255, 0.25);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 0 25px rgba(108, 99, 255, 0.25); /* keep glow */
+  backdrop-filter: none; /* ❌ disable blur effect */
   padding: 40px;
   text-align: center;
 }
+
 
 /* Headings */
 h1 {
@@ -45,7 +46,7 @@ button, .btn-primary {
   font-size: 16px;
   cursor: pointer;
   transition: all 0.4s ease;
-  box-shadow: 0 0 12px rgba(108, 99, 255, 0.3);
+  box-shadow: none;
   position: relative;
   overflow: hidden;
 }
@@ -53,7 +54,7 @@ button, .btn-primary {
 /* Button Hover Glow Effect */
 button:hover, .btn-primary:hover {
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 0 25px rgba(108, 99, 255, 0.6);
+  box-shadow: none;
   background: linear-gradient(90deg, #7a6fff 0%, #00e0ff 100%);
 }
 
@@ -165,7 +166,7 @@ input[type="file"]:hover {
   padding: 15px;
   border-radius: 8px;
   text-align: left;
-  box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
+  box-shadow: none;
 }
 
 /* ✅ Thank You Box — Upgraded Glow Style */
@@ -180,8 +181,8 @@ input[type="file"]:hover {
   color: #c0e0ff;
   font-size: 18px;
   border: 1px solid rgba(108, 99, 255, 0.5);
-  box-shadow: 0 0 25px rgba(108, 99, 255, 0.25), inset 0 0 10px rgba(0, 212, 255, 0.15);
-  animation: glowBlue 2.5s ease-in-out infinite alternate;
+  box-shadow: none;
+  animation: none;
 }
 
 /* 👇 Add this small extra block (below the above one) */
@@ -443,7 +444,7 @@ textarea:focus {
   box-shadow: 0 0 25px rgba(0, 255, 150, 0.35),
               inset 0 0 20px rgba(0, 255, 120, 0.15);
   animation: thankyouGlowGreen 3s infinite alternate ease-in-out;
-  backdrop-filter: blur(12px);
+  backdrop-filter: none;
 }
 
 /* 🌟 Glow Animation for Green Thank You */
@@ -554,4 +555,28 @@ textarea:focus {
   box-shadow: 0 0 10px #00c6ff;
   z-index: 1000;
   letter-spacing: 1px;
+}
+
+.feedback-box {
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  border-radius: 10px;
+  margin-top: 15px;
+  padding: 15px;
+  color: #c0ffc8;
+  transition: all 0.4s ease;
+}
+
+.feedback-text {
+  margin-top: 10px;
+  font-style: italic;
+  color: #9efff2;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.feedback-text.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

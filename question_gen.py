@@ -1,109 +1,140 @@
+import os
 import google.generativeai as genai
-import random
+import json
+import re
 
-# --- Gemini Question Generator (v2.5-stable) ---
+# Configure Gemini with API key
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
+
+# 🧩 Function 1 — Generate Written Questions
 def generate_questions(skills):
     """
-    Generates AI-based interview questions using the latest Gemini 2.5 model.
-    Returns a list of question dictionaries (with type, text, and difficulty).
+    Generates a mix of written interview questions (MCQ, coding, pseudocode)
+    based on the extracted skills from the resume.
     """
-
-    # Convert skill list into a readable format
-    skill_text = ", ".join(skills)
-
-    # ✅ Place your prompt INSIDE the function and properly indented
     prompt = f"""
     You are an AI interview question generator.
-    Generate exactly **10 interview questions** based on: {skill_text}
+    Based on the following technical skills: {', '.join(skills)},
+    create 10 written interview questions — a mix of MCQs, pseudocode, and coding questions.
+    Each question should include difficulty level tags: Easy, Medium, or Difficult.
 
-    Divide them as:
-    - 3 Multiple Choice Questions (MCQs)
-    - 5 Pseudocode-based logical questions
-    - 2 Coding questions
-
-    For each MCQ:
-    - Always include options A), B), C), D) on new lines.
-    - Each option should be short and clear.
-    - Include "Correct Answer:" at the end.
-
-    For all questions:
-    - Start every question with "Q:".
-    - Add "Type:" and "Difficulty:" on new lines (one of Easy, Medium, Difficult).
-    - Keep formatting consistent like this:
-
-    Example:
-    Q: What is a Python decorator?
-    Type: MCQ
-    Difficulty: Medium
-    A) A special syntax for loops
-    B) A function that modifies another function
-    C) A Python library
-    D) None of the above
-    Correct Answer: B
-    ---
+    Format the output as:
+    [
+      {{
+        "type": "MCQ" / "Pseudocode" / "Coding" / "Conceptual",
+        "difficulty": "Easy" / "Medium" / "Difficult",
+        "text": "Question text here"
+      }}
+    ]
     """
 
     try:
-        # ✅ Use the latest, stable Gemini 2.5 Flash model
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-pro")
         response = model.generate_content(prompt)
-
-        # Handle empty or malformed responses gracefully
-        if not response.text or "Q:" not in response.text:
-            raise ValueError("Gemini returned an empty or malformed response.")
-
-        # Split by questions
-        lines = response.text.split("Q:")
-        questions = []
-
-        for line in lines:
-            if not line.strip():
-                continue
-
-            text = line.strip()
-            q_type = "General"
-            difficulty = "Medium"
-
-            # Extract type
-            if "MCQ" in text or "mcq" in text:
-                q_type = "MCQ"
-            elif "Pseudocode" in text or "pseudo" in text:
-                q_type = "Pseudocode"
-            elif "Coding" in text or "code" in text:
-                q_type = "Coding"
-
-            # Extract difficulty
-            if "Easy" in text:
-                difficulty = "Easy"
-            elif "Difficult" in text or "Hard" in text:
-                difficulty = "Difficult"
-
-            # Structure question object
-            question = {
-                "text": text.replace("Type:", "").replace("Difficulty:", "").strip(),
-                "type": q_type,
-                "difficulty": difficulty
-            }
-            questions.append(question)
-
-        # Always limit to 10 questions
-        return questions[:10]
-
+        text = response.text
+        json_str = re.search(r'\[.*\]', text, re.DOTALL).group()
+        questions = json.loads(json_str)
+        return questions
     except Exception as e:
-        print(f"⚠️ Gemini API Error: {e}")
-        print("👉 Using fallback questions instead.")
-        # --- Fallback hardcoded questions (in case API fails)
-        fallback = [
-            {"text": "What is a Python decorator? Give an example.", "type": "MCQ", "difficulty": "Medium"},
-            {"text": "Write pseudocode for sorting an array using bubble sort.", "type": "Pseudocode", "difficulty": "Easy"},
-            {"text": "Write code to reverse a string in Java.", "type": "Coding", "difficulty": "Medium"},
-            {"text": "What is encapsulation in OOP?", "type": "MCQ", "difficulty": "Easy"},
-            {"text": "Write pseudocode to find the largest of three numbers.", "type": "Pseudocode", "difficulty": "Easy"},
-            {"text": "Write code to check if a number is prime in Python.", "type": "Coding", "difficulty": "Medium"},
-            {"text": "What is the difference between a stack and a queue?", "type": "MCQ", "difficulty": "Medium"},
-            {"text": "Write pseudocode for binary search.", "type": "Pseudocode", "difficulty": "Medium"},
-            {"text": "Write code to count vowels in a string in Java.", "type": "Coding", "difficulty": "Medium"},
-            {"text": "Explain polymorphism with an example.", "type": "MCQ", "difficulty": "Medium"},
+        print("⚠️ Error generating written questions:", e)
+        return [
+            {"type": "Conceptual", "difficulty": "Medium", "text": "Explain your experience with AI projects."}
         ]
-        return fallback
+
+
+# 🧩 Function 2 — Generate Video Interview Questions
+def generate_video_questions(skills):
+    """
+    Generates 2 AI-driven video interview questions where the candidate
+    must respond verbally. The questions test communication, confidence,
+    and technical understanding.
+    """
+    prompt = f"""
+    You are an AI interview coach generating video-based interview questions.
+    Based on these skills: {', '.join(skills)},
+    create 2 verbal interview questions that the candidate will answer on video.
+    
+    Each question should be clear and require a spoken explanation or reasoning.
+    Also suggest a time limit (in seconds) suitable for each question.
+    
+    Example format:
+    [
+      {{
+        "question": "Describe a challenging machine learning project you worked on.",
+        "time_limit": 90
+      }},
+      {{
+        "question": "Explain how REST APIs work and why they are useful.",
+        "time_limit": 60
+      }}
+    ]
+    """
+
+    try:
+        model = genai.GenerativeModel("gemini-2.0-pro")
+        response = model.generate_content(prompt)
+        text = response.text
+        json_str = re.search(r'\[.*\]', text, re.DOTALL).group()
+        questions = json.loads(json_str)
+        return questions
+    except Exception as e:
+        print("⚠️ Error generating video questions:", e)
+        return [
+            {"question": "Tell us about your most impactful technical project and your role in it.", "time_limit": 90},
+            {"question": "Explain a recent technology trend that excites you and why.", "time_limit": 60}
+        ]
+
+
+# 🧩 Function 3 — Evaluate Video Answer using Gemini
+def evaluate_video_answer(question_text, transcript_text):
+    """
+    Uses Gemini to evaluate the candidate’s verbal response to a question.
+    Returns structured feedback with scores and a short summary.
+    """
+    prompt = f"""
+    You are an AI interview evaluator.
+
+    Interview Question:
+    "{question_text}"
+
+    Candidate's Transcribed Response:
+    "{transcript_text}"
+
+    Evaluate this answer on a scale of 1–10 for the following:
+    1. Clarity of explanation
+    2. Relevance to the question
+    3. Confidence and tone
+    4. Structure and logical flow
+    5. Overall communication effectiveness
+
+    Also, provide a short feedback summary (2–3 sentences) highlighting
+    the candidate’s strengths and one area of improvement.
+
+    Format your response as JSON:
+    {{
+      "scores": {{
+        "Clarity": 8,
+        "Relevance": 7,
+        "Confidence": 9,
+        "Structure": 8,
+        "Overall": 8
+      }},
+      "feedback": "Strong and clear explanation. Maintain eye contact and give more examples next time."
+    }}
+    """
+
+    try:
+        model = genai.GenerativeModel("gemini-2.0-pro")
+        response = model.generate_content(prompt)
+        text = response.text
+        json_str = re.search(r'\{.*\}', text, re.DOTALL).group()
+        feedback = json.loads(json_str)
+        return feedback
+    except Exception as e:
+        print("⚠️ Error generating Gemini feedback:", e)
+        return {
+            "scores": {"Clarity": 7, "Relevance": 7, "Confidence": 7, "Structure": 7, "Overall": 7},
+            "feedback": "Good response. Try to elaborate more and speak confidently."
+        }
+

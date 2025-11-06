@@ -11,8 +11,14 @@
   <!-- 🔹 Navbar -->
 <header class="navbar">
   <h2>🤖 AI Interview Coach</h2>
+  <nav class="nav-links">
+    {% if 'user' in session %}
+      <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+    {% else %}
+      <a href="{{ url_for('home') }}" class="nav-link">🏠 Home</a>
+    {% endif %}
+  </nav>
 </header>
-
 
   <!-- 🔹 Hero Section -->
   <div class="container">

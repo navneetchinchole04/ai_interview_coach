@@ -17,6 +17,40 @@
       border-radius: 8px;
       font-family: monospace;
     }
+
+    /* 🎥 Record Section Styling */
+    .record-section {
+      margin-top: 40px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    }
+
+    .record-section button {
+      margin: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #00ff88;
+      color: black;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .record-section button:disabled {
+      background-color: #444;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    video {
+      border-radius: 12px;
+      border: 2px solid #00ff88;
+      margin-top: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -66,7 +100,7 @@
           {% endif %}
         </div>
       {% endfor %}
-      <button type="submit" class="btn-primary">✅ Submit All Answers</button>
+      <a href="{{ url_for('video_round') }}" class="btn-primary">🎯 Move to Video Round</a>
     </form>
 
     <div id="thankyouBox" class="thankyou-message">
@@ -105,37 +139,68 @@
 
     form.addEventListener('submit', function(event) {
       event.preventDefault();
-
-      // Count answered questions
       const totalQuestions = document.querySelectorAll('.question-block').length;
       const filledAnswers = Array.from(form.elements).filter(el => 
         (el.type === 'textarea' && el.value.trim() !== '') ||
         (el.type === 'radio' && el.checked)
       ).length;
-
-      // Show answer summary
       answerSummary.textContent = `📊 You answered ${filledAnswers} out of ${totalQuestions} questions.`;
-
-      // Stop the timer
       clearInterval(timerInterval);
       timerDisplay.style.display = 'none';
-
-      // Smooth fade-out form
       form.style.opacity = 0;
       setTimeout(() => {
         form.style.display = "none";
-
-        // Show Thank You box with fade-in effect
         thankyouBox.style.display = "block";
         setTimeout(() => {
           thankyouBox.style.opacity = 1;
           thankyouBox.style.transition = "opacity 1.5s ease-in-out";
         }, 200);
-
         thankyouBox.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 900);
     });
-  </script>
 
+    // 🎥 RECORDING SCRIPT
+    let mediaRecorder;
+    let recordedChunks = [];
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const preview = document.getElementById("preview");
+    const status = document.getElementById("status");
+
+    startBtn.onclick = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      preview.srcObject = stream;
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (e) => recordedChunks.push(e.data);
+      mediaRecorder.onstop = () => stream.getTracks().forEach((track) => track.stop());
+      mediaRecorder.start();
+      status.textContent = "🎙️ Recording in progress...";
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+    };
+
+    stopBtn.onclick = () => {
+      mediaRecorder.stop();
+      status.textContent = "✅ Recording stopped.";
+      stopBtn.disabled = true;
+      uploadBtn.disabled = false;
+    };
+
+    uploadBtn.onclick = async () => {
+      const blob = new Blob(recordedChunks, { type: "video/webm" });
+      const formData = new FormData();
+      formData.append("video", blob, "answer.webm");
+      status.textContent = "📤 Uploading...";
+      const res = await fetch("/upload_video", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.status === "success") {
+        status.textContent = "✅ Uploaded successfully!";
+      } else {
+        status.textContent = "❌ Upload failed.";
+      }
+    };
+  </script>
 </body>
 </html>
