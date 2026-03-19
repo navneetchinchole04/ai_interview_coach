@@ -5,6 +5,11 @@ It analyzes resumes, generates personalized interview questions, and provides in
 
 ---
 
+## 🌐 Live Demo
+🔗 https://ai-interview-coach-wxs5.onrender.com 
+
+---
+
 ## 🚀 Features  
 
 - 🧠 **AI-Generated Interview Questions** — Generated dynamically based on your uploaded resume or selected job role.  
@@ -185,11 +190,6 @@ To deploy your Flask app online:
 4. Set the start command as:
    ```bash
    gunicorn app:app
-
----
-
-## 🌐 Live Demo
-🔗 https://ai-interview-coach-wxs5.onrender.com 
 
 ---
 
